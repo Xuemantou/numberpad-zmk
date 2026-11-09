@@ -1,0 +1,6 @@
+---
+include:
+  - board: nice_nano_v2
+    shield: numberpad
+    snippet: studio-rpc-usb-uart
+    artifact-name: numberpad

@@ -1,0 +1,57 @@
+/*
+ * numberpad shield - 17-key numpad, SuperMini / ProMicro nRF52840 (nice_nano_v2 compatible)
+ *
+ * Matrix (from FlyingProbeTesting.json netlist of the PCB):
+ *   COL0..3 = pro_micro 21 / 20 / 19 / 18   (P0.31 / P0.29 / P0.02 / P1.15)
+ *   ROW0..4 = pro_micro  1 /  0 /  2 /  3 / 4  (P0.06 / P0.08 / P0.17 / P0.20 / P0.22)
+ *   diode-direction = col2row (cathode to switch -> row, anode on column side)
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <layouts/common/numpad/17_key.dtsi>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,physical-layout = &layout_numpad_17_key;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        diode-direction = "col2row";
+
+        col-gpios
+            = <&pro_micro 21 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 20 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 19 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 18 GPIO_ACTIVE_HIGH>
+            ;
+
+        row-gpios
+            = <&pro_micro 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 0 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 2 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+
+    /* Visual order: NumLock / * -  |  7 8 9 +  |  4 5 6  |  1 2 3 Enter  |  0 . */
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <4>;
+        rows = <5>;
+        map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+RC(1,0) RC(1,1) RC(1,2) RC(2,3)
+RC(2,0) RC(2,1) RC(2,2)
+RC(3,0) RC(3,1) RC(3,2) RC(4,3)
+RC(4,0) RC(4,2)
+        >;
+    };
+};
+
+&layout_numpad_17_key {
+    transform = <&default_transform>;
+};
